@@ -854,6 +854,7 @@ for g=1:nColX
       % generated from bootstrapped data
       ci=prctile(es(2:end),[alpha/2  1-alpha/2]'*100);
       % retain first element; this is the es computed from real data
+      stats.([curEs 'ESboot']) = es(2:end);
       es=es(1);
     end
     

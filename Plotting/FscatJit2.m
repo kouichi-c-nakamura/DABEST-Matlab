@@ -182,7 +182,7 @@ stats = table(uidents, Value, CI, N, 'VariableNames',{'Group','Value','CIs','N'}
 
 
 %% Set ticks, contigent on whether it is 2 or some other number of datasets
-if length(celld)==2;
+if length(celld)==2
     Xplus=horzcat(X, 3);
     disp(Xplus);
     set(gca,'XTick',Xplus)
@@ -200,7 +200,7 @@ end
 
 
 %% Insert mean difference and CIs on a different axis if there is a pair
-if length(celld)==2;
+if length(celld)==2
     if strcmpi(isPaired, 'Y')
         colors = lines(100);
         hold off
@@ -325,12 +325,12 @@ if length(celld)==2;
         [x,~] = dsxy2figxy(refAxes, .5, av(1));
         [x2, ~] = dsxy2figxy(refAxes, 2.5, av(2));
         line1= annotation('line', [x ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1)))], [y y]);
-        line2=annotation('line', [x2 ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1)))], [y2 y2]);
+        line2= annotation('line', [x2 ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1)))], [y2 y2]);
         
     else
         % Plot the lines that join the means to the difference axis.
         line1= annotation('line', [x ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2)], [y y]);
-        line2=annotation('line', [x2 ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2)], [y2 y2]);
+        line2= annotation('line', [x2 ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2)], [y2 y2]);
     end
     
     set(line1, 'LineStyle', ':');
@@ -345,6 +345,15 @@ if length(celld)==2;
     set(errorBarAxis, 'Visible', 'Off');
     set(dummyAxis, 'YAxisLocation', 'right');
     %     set(dummyAxis, 'FontSize', 7);
+    
+    
+    
+    % Add violin
+    
+    [density, value, bwout] = ksdensity(ss.mdESboot, 'Bandwidth',[]);
+    halfviolin = patch(errorBarAxis, 3+density,value,[0.80 0.80 0.80]);
+    halfviolin.EdgeColor='none';
+    uistack(halfviolin,'bottom');
     
 else
     % To ensure consistency with the md plot so that each figure has 3
