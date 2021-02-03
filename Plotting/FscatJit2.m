@@ -340,12 +340,12 @@ if length(celld)==2
     set(p3,'MarkerFaceColor',[0 0 0],'MarkerEdgeColor',[0 0 0],...
         'MarkerSize',5,...
         'Marker',marker,...
+        'LineWidth',1,...
         'LineStyle','none');
     
     set(errorBarAxis, 'Visible', 'Off');
     set(dummyAxis, 'YAxisLocation', 'right');
     %     set(dummyAxis, 'FontSize', 7);
-    
     
     
     % Add violin
