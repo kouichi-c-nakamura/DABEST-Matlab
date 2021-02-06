@@ -189,13 +189,13 @@ if length(celld)==2
     mdidents=vertcat(uidents,' ');
     set(gca, 'xtickLabel', mdidents);
     set(gca, 'XLim', [0 length(mdidents)+1]);
-    ylabel('value','FontSize',18,'FontName','Arial');
+    ylabel('Value','FontSize',18,'FontName','Arial');
 else
     set(gca,'XTick',X);
     %     set(gca, 'xtickLabel', uidents);
     set(gca, 'xtickLabel', []);
     set(gca, 'XLim', [0 length(uidents)+1]);
-    ylabel('value','FontSize',18,'FontName','Arial');
+    ylabel('Value','FontSize',18,'FontName','Arial');
 end
 
 
@@ -221,7 +221,7 @@ if length(celld)==2
         set(gca,'XTick',Xplus)
         set(gca, 'xtickLabel', mdidents);
         set(gca, 'XLim', [0 length(mdidents)+1], 'box', 'off');
-        ylabel('value','FontSize',18,'FontName','Arial');
+        ylabel('Value','FontSize',18,'FontName','Arial');
         tripleErrorBars(av, er, [.5 2.5], barwidth, linewidth, middle_bar);
     end
 
@@ -265,23 +265,44 @@ if length(celld)==2
             refDiff = 0.1*(refLims(2) - refLims(1));
             newRefLims = [refLims(1)-refDiff refLims(2)+refDiff];
             set(refAxes, 'YLim', newRefLims);
-            [num, num3, ax1Pos, x, y, x2, y2, yNew, ~] = setThirdAxis(refAxes, av, ss.md);
+            [num, num3, ax1Pos, x, y, x2, y2, yNew, ~] = setThirdAxis(refAxes, av, ss.md); %TODO
         end
         
         
         
         % Errorbar axis
-        errorBarAxis = axes('Position',[ax1Pos(1) num3*y2-(num3-1)*y ax1Pos(3) yNew-(num3*y2-(num3-1)*y)]);
-        p3= errorbar(3 ,ss.md, moes(1),moes(2));
+%         errorBarAxis = axes('Position',[ax1Pos(1) num3*y2-(num3-1)*y ax1Pos(3) yNew-(num3*y2-(num3-1)*y)]);
+%         p3= errorbar(3 ,ss.md, moes(1),moes(2));
+%         
+%         axis([0 4 num3*ss.md (num-1)*abs(ss.md)]);
         
-        axis([0 4 num3*ss.md (num-1)*abs(ss.md)]);
         
+        refAxes.Position(3) = refAxes.Position(3)*2.9/4;
+        xlim(refAxes,[0 2.9])
+        
+        errorBarAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)*3.1/4,...
+            ax1Pos(2), ax1Pos(3)*0.9/4, ax1Pos(4)]);
+        p3 = errorbar(0 ,ss.md, moes(1),moes(2));
+
+        ylim(ylim(refAxes) - av(1) )
+        xlim([-0.5 1.5])
+        errorBarAxis.YAxisLocation = 'right';
+        errorBarAxis.FontSize = 10;
+        ylabel('Mean difference', 'FontSize', 18);
+        box off
+        
+        errorBarAxis.XTick = 0;
+        errorBarAxis.XTickLabel = [];
+
+        xlabel(sprintf('%s\n%s %s',...
+            refAxes.XTickLabel{2}, char(8722), refAxes.XTickLabel{1}));
+
         
         
         % Dummy axis that emuluates errorbar axis, but is placed next
         % to the mean difference
-        dummyAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2) num3*y2-(num3-1)*y .001 yNew-(num3*y2-(num3-1)*y)]);
-        axis([0 4 num3*ss.md (num-1)*abs(ss.md)]);
+%         dummyAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2) num3*y2-(num3-1)*y .001 yNew-(num3*y2-(num3-1)*y)]);
+%         axis([0 4 num3*ss.md (num-1)*abs(ss.md)]);
         
         marker ='v';
     elseif ss.md > 0
@@ -329,12 +350,14 @@ if length(celld)==2
         
     else
         % Plot the lines that join the means to the difference axis.
-        line1= annotation('line', [x ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2)], [y y]);
-        line2= annotation('line', [x2 ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2)], [y2 y2]);
+
+        line1= annotation('line', [x, errorBarAxis.Position(1)+errorBarAxis.Position(3)], [y y]);
+        line2= annotation('line', [x2, errorBarAxis.Position(1)+errorBarAxis.Position(3)], [y2 y2]);
+
     end
     
-    set(line1, 'LineStyle', ':');
-    set(line2, 'LineStyle', ':');
+    set(line1, 'LineStyle', '-');
+    set(line2, 'LineStyle', '-');
     
     %marker = 'v';
     set(p3,'MarkerFaceColor',[0 0 0],'MarkerEdgeColor',[0 0 0],...
@@ -343,15 +366,13 @@ if length(celld)==2
         'LineWidth',1,...
         'LineStyle','none');
     
-    set(errorBarAxis, 'Visible', 'Off');
-    set(dummyAxis, 'YAxisLocation', 'right');
-    %     set(dummyAxis, 'FontSize', 7);
+
     
     
     % Add violin
     
     [density, value, bwout] = ksdensity(ss.mdESboot, 'Bandwidth',[]);
-    halfviolin = patch(errorBarAxis, 3+density,value,[0.80 0.80 0.80]);
+    halfviolin = patch(errorBarAxis, density/max(max(density)),value,[0.80 0.80 0.80]);
     halfviolin.EdgeColor='none';
     uistack(halfviolin,'bottom');
     
@@ -364,7 +385,7 @@ else
     set(errorBarAxis,'Color','k', 'Visible', 'Off');
     set(dummyAxis,'Color','k', 'Visible', 'Off');
     marker = 'o';
-    ylabel('value','FontSize',18,'FontName','Arial');
+    ylabel('Value','FontSize',18,'FontName','Arial');
     if isempty(lims) == 0
         set(refAxes, 'YLim', lims);
     end
@@ -451,7 +472,7 @@ else
         pwmd(1,1).select();
         refAxes = gca;
         marker = 'o';
-        ylabel('value','FontSize',18,'FontName','Arial');
+        ylabel('Value','FontSize',18,'FontName','Arial');
         if isempty(lims) == 0
             set(refAxes, 'YLim', lims);
         end
