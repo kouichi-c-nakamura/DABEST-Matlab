@@ -268,18 +268,10 @@ if length(celld)==2
             [num, num3, ax1Pos, x, y, x2, y2, yNew, ~] = setThirdAxis(refAxes, av, ss.md); %TODO
         end
         
-        
-        
-        % Errorbar axis
-%         errorBarAxis = axes('Position',[ax1Pos(1) num3*y2-(num3-1)*y ax1Pos(3) yNew-(num3*y2-(num3-1)*y)]);
-%         p3= errorbar(3 ,ss.md, moes(1),moes(2));
-%         
-%         axis([0 4 num3*ss.md (num-1)*abs(ss.md)]);
-        
-        
         refAxes.Position(3) = refAxes.Position(3)*2.9/4;
         xlim(refAxes,[0 2.9])
         
+        % Errorbar axis
         errorBarAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)*3.1/4,...
             ax1Pos(2), ax1Pos(3)*0.9/4, ax1Pos(4)]);
         p3 = errorbar(0 ,ss.md, moes(1),moes(2));
@@ -297,12 +289,6 @@ if length(celld)==2
         xlabel(sprintf('%s\n%s %s',...
             refAxes.XTickLabel{2}, char(8722), refAxes.XTickLabel{1}));
 
-        
-        
-        % Dummy axis that emuluates errorbar axis, but is placed next
-        % to the mean difference
-%         dummyAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2) num3*y2-(num3-1)*y .001 yNew-(num3*y2-(num3-1)*y)]);
-%         axis([0 4 num3*ss.md (num-1)*abs(ss.md)]);
         
         marker ='v';
     elseif ss.md > 0
