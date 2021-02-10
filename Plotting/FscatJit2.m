@@ -567,3 +567,18 @@ else
 end
 ss = stats;
 end
+
+function out = prep_identifiers (x)
+
+if iscell(x)
+    out = x;
+elseif isstring(x)
+    out = cellstr(x);
+elseif isnumeric(x)
+    out = num2cell(x);
+elseif islogical(x)
+    out = num2cell(x);
+end
+
+end
+
