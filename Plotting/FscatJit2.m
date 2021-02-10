@@ -178,6 +178,7 @@ if strcmp(barstate, 'on')
     mydata=(1:length(av));
     bar_child=get(b,'Children');
     set(bar_child,'CData',mydata);
+    box off
     % colormap(summer)
     % beta=0.5;
     % brighten(beta)
