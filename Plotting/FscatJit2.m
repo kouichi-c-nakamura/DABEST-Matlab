@@ -85,13 +85,14 @@ arguments
     args.lims = [] 
     args.circleSize (1,1) double = 170
     args.barstate (1,:) char {mustBeMember(args.barstate,{'on', 'off'})} = 'off'
+    args.CIofdata (1,:) char {mustBeMember(args.CIofdata,{'on', 'off'})} = 'on'
       
 end
 
 lims = args.lims;
 circleSize = args.circleSize;
 barstate = args.barstate;
-
+showCIofdata = args.CIofdata;
 
 % nVarargs = length(varargin);
 % % fprintf('Inputs in varargin(%d):\n',nVarargs);
@@ -217,8 +218,9 @@ end
 hold on;
 stats = table(uidents, Value, CI, N, 'VariableNames',{'Group','Value','CIs','N'});
 
-[e1] = tripleErrorBars(av, er, X, barwidth, linewidth, middle_bar);
-
+if strcmp(showCIofdata,'on')
+    [e1] = tripleErrorBars(av, er, X, barwidth, linewidth, middle_bar);
+end
 
 %% Set ticks, contigent on whether it is 2 or some other number of datasets
 if length(celld)==2
@@ -261,7 +263,10 @@ if length(celld)==2
         set(gca, 'xtickLabel', mdidents);
         set(gca, 'XLim', [0 length(mdidents)+1], 'box', 'off');
         ylabel('Value','FontSize',18,'FontName','Arial');
+        
+        % if strcmp(showCIofdata,'on')
         tripleErrorBars(av, er, [.5 2.5], barwidth, linewidth, middle_bar);
+        % end
     end
 
     % Get the mean difference and CIs
