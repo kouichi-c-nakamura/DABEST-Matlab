@@ -1,4 +1,4 @@
-function  ss=FscatJit2(identifiers, data, varargin)
+function  ss=FscatJit2(identifiers, data, isPaired, args)
 
 % Plots data as both jittered points and an error bar, in the
 % order the identifiers are passed to it. It preserves whatever order
@@ -6,7 +6,27 @@ function  ss=FscatJit2(identifiers, data, varargin)
 % size or use a default. Also allows someone to add bars to the plot.
 %
 % FscatJit(identifiers, data)
-% Uses the default circle size, no bars
+% FscatJit(identifiers, data, isPaired)
+% FscatJit(____, 'Param', value, ...)
+%
+% identifiler   column vector of cell array, string array, numbers, logical
+%               %TODO support categorical
+%
+% data          column vector of real numbers
+%
+% isPaird       'N' (default) | 'Y'
+%               'Y' will treat data as paired.
+%
+%%
+% OPTIONAL PARAM/VALUE PAIRS
+% 'barstate'    'off' (default) | 'on'
+%               'off' will make a scatter/swarm chart. 'on' will make a bar chart instead.   
+%               
+% 'lims'         [] (default) | a row vector of two elements 
+%                Specifies YLim of the Axes
+%
+% 'circleSize'   170 (default) | scalar positive number
+%                Specifies the size of circles. 
 %
 % FscatJit(identifiers, data, circleSize)
 % Defines the circle size, no bars
@@ -56,40 +76,57 @@ function  ss=FscatJit2(identifiers, data, varargin)
 
 %% Deal with the varargin options
 % fprintf('Total number of inputs = %d\n',nargin);
-nVarargs = length(varargin);
-% fprintf('Inputs in varargin(%d):\n',nVarargs);
-% If no circleSize is given, define a default
-if nVarargs == 0
-    lims = [];
-    isPaired = 'N';
-    circleSize=170;
-    barstate='off';
-elseif nVarargs == 1 && isfloat(varargin{1});
-    lims = varargin{1};
-    isPaired = 'N';
-    circleSize= 170;
-    barstate='off';
-elseif nVarargs == 1 && ~isfloat(varargin{1});
-    lims = [];
-    isPaired = varargin{1};
-    circleSize=50;
-    barstate='off';
-elseif nVarargs == 2
-    lims = varargin{1};
-    isPaired = varargin{2};
-    circleSize=170;
-    barstate='off';
-elseif nVarargs == 3
-    lims = varargin{1};
-    isPaired = varargin{2};
-    circleSize=varargin{3};
-    barstate='off';
-elseif nVarargs == 4
-    lims = varargin{1};
-    isPaired = varargin{2};
-    circleSize=varargin{3};
-    barstate=varargin{4};
+
+arguments
+    
+    identifiers (1, :)
+    data (1, :) {mustBeNumeric}
+    isPaired (1,:) char {mustBeMember(isPaired ,{'Y', 'N'})} ='N'
+    args.lims = [] 
+    args.circleSize (1,1) double = 170
+    args.barstate (1,:) char {mustBeMember(args.barstate,{'on', 'off'})} = 'off'
+      
 end
+
+lims = args.lims;
+circleSize = args.circleSize;
+barstate = args.barstate;
+
+
+% nVarargs = length(varargin);
+% % fprintf('Inputs in varargin(%d):\n',nVarargs);
+% % If no circleSize is given, define a default
+% if nVarargs == 0
+%     lims = [];
+%     isPaired = 'N';
+%     circleSize=170;
+%     barstate='off';
+% elseif nVarargs == 1 && isfloat(varargin{1})
+%     lims = varargin{1};
+%     isPaired = 'N';
+%     circleSize= 170;
+%     barstate='off';
+% elseif nVarargs == 1 && ~isfloat(varargin{1})
+%     lims = [];
+%     isPaired = varargin{1};
+%     circleSize=50;
+%     barstate='off';
+% elseif nVarargs == 2
+%     lims = varargin{1};
+%     isPaired = varargin{2};
+%     circleSize=170;
+%     barstate='off';
+% elseif nVarargs == 3
+%     lims = varargin{1};
+%     isPaired = varargin{2};
+%     circleSize=varargin{3};
+%     barstate='off';
+% elseif nVarargs == 4
+%     lims = varargin{1};
+%     isPaired = varargin{2};
+%     circleSize=varargin{3};
+%     barstate=varargin{4};
+% end
 
 switch barstate
     case 'on'
