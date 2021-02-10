@@ -137,6 +137,7 @@ switch barstate
 end
 
 
+identifiers = prep_identifiers (identifiers);
 
 %% Repack into nan-padded columns if they are in vector form
 if size(identifiers)==size(data)
