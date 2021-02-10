@@ -7,11 +7,11 @@ data = d(:,{'Values'});
 data = table2array(data);
 close(gcf);
 
-if length(varargin) > 0;
-    if strcmp(varargin{1},'Paired');
+if ~isempty(varargin)
+    if strcmp(varargin{1},'Paired')
         [ss] = FscatJit2(identifiers, data,'Y');
     
-    else strcmp(varargin{1},'mergeGroups');
+    elseif strcmp(varargin{1},'mergeGroups')
         [ss] = FscatJit2_mergeGroups(identifiers, data);
         
     end
