@@ -25,6 +25,11 @@ function [cellofMats, uIdents] = repackData (identifiers, data)
 % identifiers=ceil(b);
 % %end testing_______________
 
+arguments
+    identifiers (:,1) cell
+    data (:,1) {mustBeNumeric}    
+end
+
 % Extract data into a cell for each genotype,
 uIdents = unique(identifiers);
 
@@ -89,4 +94,4 @@ else
     
 end
 
-
+end
