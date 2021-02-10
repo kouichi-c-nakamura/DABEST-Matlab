@@ -26,7 +26,8 @@ end
 
 %% Draw the error bars
 hold on;
-e1=errorbar(col, av, er(1,:), er(2,:), 'Color',[0 0 0],'LineWidth', linewidth, 'MarkerSize', 10, 'LineStyle','none');
+e1=errorbar(col, av, er(1,:), er(2,:), 'Color',[0 0 0],'LineWidth', linewidth, 'MarkerSize', 10, 'LineStyle','none',...
+    'DisplayName','95% Confidence Interval');
 
 % errorbar_tick(e1, barwidth, 'units')
 
