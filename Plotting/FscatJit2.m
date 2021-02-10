@@ -139,6 +139,7 @@ end
 
 identifiers = prep_identifiers (identifiers);
 
+
 %% Repack into nan-padded columns if they are in vector form
 if size(identifiers)==size(data)
     [celld, uidents] = repackData (identifiers, data);
@@ -304,78 +305,58 @@ if length(celld)==2
             newRefLims = [refLims(1)-refDiff refLims(2)+refDiff];
             set(refAxes, 'YLim', newRefLims);
             [num, num3, ax1Pos, x, y, x2, y2, yNew, ~] = setThirdAxis(refAxes, av, ss.md); %TODO
-        end
-        
-        refAxes.Position(3) = refAxes.Position(3)*2.9/4;
-        xlim(refAxes,[0 2.9])
-        
-        % Errorbar axis
-        errorBarAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)*3.1/4,...
-            ax1Pos(2), ax1Pos(3)*0.9/4, ax1Pos(4)]);
-        p3 = errorbar(0 ,ss.md, moes(1),moes(2));
-
-        ylim(ylim(refAxes) - av(1) )
-        xlim([-0.5 1.5])
-        errorBarAxis.YAxisLocation = 'right';
-        errorBarAxis.FontSize = 10;
-        ylabel('Mean difference', 'FontSize', 18);
-        box off
-        
-        errorBarAxis.XTick = 0;
-        errorBarAxis.XTickLabel = [];
-
-        xlabel(sprintf('%s\n%s %s',...
-            refAxes.XTickLabel{2}, char(8722), refAxes.XTickLabel{1}));
-
+        end        
         
         marker ='v';
     elseif ss.md > 0
         
-        while (num3*y2-(num3-1)*y) >= ax1Pos(2) + ax1Pos(4);
+        while (num3*y2-(num3-1)*y) >= ax1Pos(2) + ax1Pos(4)
             refLims = get(refAxes, 'YLim');
             refDiff = 0.1*(refLims(2) - refLims(1));
             newRefLims = [refLims(1)-refDiff refLims(2)+refDiff];
             set(refAxes, 'YLim', newRefLims);
             [num, num3, ax1Pos, x, y, x2, y2, ~, ~] = setThirdAxis(refAxes, av, ss.md);
         end
-        
-        
-        % Errorbar axis
-        errorBarAxis = axes('Position',[ax1Pos(1) num*y-(num-1)*y2 ax1Pos(3) ((num3*y2-(num3-1)*y) - (num*y-(num-1)*y2))]);
-        p3= errorbar(3 ,ss.md, moes(1),moes(2));
-        
-        axis([0 4 (num-1)*(-1)*ss.md num3*(ss.md)]);
-        
-        % Dummy axis that emuluates the y values of hte errorbar axis, but is placed next
-        % to the mean difference
-        dummyAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2) num*y-(num-1)*y2 .001 ((num3*y2-(num3-1)*y) - (num*y-(num-1)*y2))]);
-        axis([0 4 (num-1)*(-1)*ss.md num3*(ss.md)]);
+
         marker ='^';
         
     else
-        
-        errorBarAxis = axes('Position',[ax1Pos(1) y-0.3 ax1Pos(3) 0.6]);
-        
-        p3= errorbar(3 ,ss.md, moes(1),moes(2));
-        axis([0 4 -.1 .1]);
-        
-        dummyAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1))/2) y-0.3 .001 0.6]);
-        axis([0 4 -0.1 0.1]);
-        
         marker ='o';
     end
+    
+    refAxes.Position(3) = refAxes.Position(3)*2.9/4;
+    xlim(refAxes,[0 2.9])
+    
+    errorBarAxis = axes('Position',[ax1Pos(1) + ax1Pos(3)*3/4,...
+        ax1Pos(2), ax1Pos(3)*0.9/4, ax1Pos(4)]);
+    p3= errorbar(0 ,ss.md, moes(1),moes(2));
+    errorBarAxis.Tag = 'errorBarAxis';
+    
+    ylim(ylim(refAxes) - av(1) )
+    xlim([-0.5 1.5])
+    errorBarAxis.YAxisLocation = 'right';
+    errorBarAxis.FontSize = 10;
+    ylabel('Mean difference', 'FontSize', 18);
+    box off
+    
+    errorBarAxis.XTick = 0;
+    errorBarAxis.XTickLabel = [];
+    
+    xlabel(sprintf('%s\n%s %s',...
+        refAxes.XTickLabel{2}, char(8722), refAxes.XTickLabel{1}));
+
     
     if strcmp(isPaired, 'Y')
         colors = lines(100);
         [x,~] = dsxy2figxy(refAxes, .5, av(1));
         [x2, ~] = dsxy2figxy(refAxes, 2.5, av(2));
-        line1= annotation('line', [x ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1)))], [y y]);
+        line1= annotation('line', [x  ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1)))], [y y]);
         line2= annotation('line', [x2 ax1Pos(1) + ax1Pos(3)-((x-ax1Pos(1)))], [y2 y2]);
         
     else
         % Plot the lines that join the means to the difference axis.
 
-        line1= annotation('line', [x, errorBarAxis.Position(1)+errorBarAxis.Position(3)], [y y]);
+        line1= annotation('line', [x,  errorBarAxis.Position(1)+errorBarAxis.Position(3)], [y y]);
         line2= annotation('line', [x2, errorBarAxis.Position(1)+errorBarAxis.Position(3)], [y2 y2]);
 
     end
@@ -388,13 +369,9 @@ if length(celld)==2
         'MarkerSize',5,...
         'Marker',marker,...
         'LineWidth',1,...
-        'LineStyle','none');
-    
-
-    
+        'LineStyle','none');  
     
     % Add violin
-    
     [density, value, bwout] = ksdensity(ss.mdESboot, 'Bandwidth',[]);
     halfviolin = patch(errorBarAxis, density/max(max(density)),value,[0.80 0.80 0.80]);
     halfviolin.EdgeColor='none';
