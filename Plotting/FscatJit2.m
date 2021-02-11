@@ -226,7 +226,7 @@ end
 %% Set ticks, contigent on whether it is 2 or some other number of datasets
 if length(celld)==2
     Xplus=horzcat(X, 3);
-    disp(Xplus);
+    % disp(Xplus);
     set(gca,'XTick',Xplus)
     mdidents=vertcat(uidents,' ');
     set(gca, 'xtickLabel', mdidents);
