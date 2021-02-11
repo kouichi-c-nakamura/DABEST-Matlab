@@ -41,15 +41,19 @@ for idx=1:length(xout)
         inBins=find(vec > (xout(idx) - bhw) & vec <= (xout(idx) + bhw+0.00001));
     end
     % find how many data points there are in a bin
-    jits(inBins)=jits(inBins).*nnorm(idx);
+    jits(inBins) = jits(inBins).*nnorm(idx);
     binjits = jits(inBins);
-    bjn=numel(binjits);
+    bjn = numel(binjits);
     % spread out the bin members along the x-axis
-    if bjn >0;
-        bjn=bjn-1;
-        step= (binjits(1).*2/bjn);
-        bjrange=[(binjits(1)*-1):step:binjits(1)];
-        jits(inBins)=bjrange;
+    if bjn >0
+        bjn = bjn-1;
+        step = (binjits(1).*2/bjn);
+        if step == 0 % needs special handling
+            bjrange = binjits';
+        else
+            bjrange =[(binjits(1)*-1):step:binjits(1)];
+        end        
+        jits(inBins) = bjrange;
     end
     
     
