@@ -12,11 +12,18 @@ av=nanmean(vec);
 
 %% Calculate CIs
 hm=@(x) nanmean(x);
-bci=bootci(10000, hm, vec)';
+if numel(vec) > 1
+    bci = bootci(10000, hm, vec)';
+    
+    %% MOEs
+    moes(1)=abs(av-bci(1));
+    moes(2)=abs(av-bci(2));
+else
+    bci = [0 0];
+    %% MOEs
+    moes(1)=0;
+    moes(2)=0;
 
-
-%% MOEs
-moes(1)=abs(av-bci(1));
-moes(2)=abs(av-bci(2));
+end
 
 
